@@ -40,8 +40,9 @@ export default class Searchbar extends Component {
       onChange={this.handleChange}
     />
     </form>
-        </header>
-        </>
+      </header>
+      </>
+      
     )
   }
 }

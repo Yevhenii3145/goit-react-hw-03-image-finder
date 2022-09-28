@@ -5,7 +5,6 @@ import Button from './components/Button/Button'
 import { ColorRing } from 'react-loader-spinner'
 import Modal from './components/Modal/Modal'
 import { searchPosts } from "./components/GetData/Getting"
-
 import './components/styles.css'
 
 export default class App extends Component {
@@ -14,27 +13,22 @@ export default class App extends Component {
     loading: false,
     error: null,
     search: "",
-     page: 1,
-     modalOpen: false,
+    page: 1,
+    total: null,
+    modalOpen: false,
     modalContent: {
             src: '',
             alt: "",
         }
    }
-  // componentDidMount() {
-  //   if (this.state.search ) {
-  //     this.fetchCPictures();
-  //   }
-  // }
+
   componentDidUpdate(prevProps, prevState) {
     const { search, page } = this.state;
-    if (search && prevState.search !== search)  {
+    if ((search && prevState.search !== search) || (prevState.page !== page))  {
       this.fetchCPictures();
     }
-    if (prevState.page !== page) {
-      this.addPosts()
-    }
   }
+
     async fetchCPictures() {
       const { search,page } = this.state;
     this.setState({
@@ -44,7 +38,8 @@ export default class App extends Component {
         const data = await searchPosts(search, page);
         this.setState(({ items }) => {
           return {
-            items: [...data.hits]
+            items: [...items, ...data.hits],
+            total: data.total,
           }
         })
     }catch (error) {
@@ -57,32 +52,12 @@ export default class App extends Component {
         })
     }
     }
-  async addPosts() {
-    const { search, page } = this.state;
-    this.setState({
-      loading: true,
-    })
-    try {
-      const data = await searchPosts(search, page);
-      this.setState(({ items }) => {
-        return {
-          items: [...items, ...data.hits]
-        }
-      })
-    } catch (error) {
-      this.setState({
-        error,
-      })
-    }finally {
-      this.setState({
-        loading:false
-      })
-    }
-  }
+
   getValueOfSearch = ({search}) => {
     this.setState({
       search,
       page: 1,
+      items: [],
     })
   }
   loadMore = () => {
@@ -111,13 +86,18 @@ export default class App extends Component {
                 alt:"",
             }
          })
-    }
+  }
+  
+
   render() {
-    const isPosts = Boolean(this.state.items.length)
+    const totalPages = Math.round(this.state.total / this.state.page)
+    const lastPage = this.state.page === totalPages
+    const isPosts = Boolean((!lastPage) && (this.state.items.length))
+
     return (
       <div className='app'>
         <Searchbar onSubmit={this.getValueOfSearch} />
-        {isPosts && <ImageGallery items={this.state.items} onClick={this.openModal} />}
+        <ImageGallery items={this.state.items} onClick={this.openModal} />
         {isPosts && <Button onClick={this.loadMore} text="Load more"></Button>}
        { this.state.loading && <ColorRing
         visible={true}

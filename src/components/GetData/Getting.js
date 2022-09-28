@@ -20,15 +20,5 @@ export const searchPosts = async (q, page = 1) => {
       q,
     },
   });
-  console.log(data);
   return data;
 };
-
-// export const getPosts = async (page) => {
-//   const { data } = await instance.get('/', {
-//     params: {
-//       page,
-//     },
-//   });
-//   return data;
-// };

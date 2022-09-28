@@ -88,6 +88,7 @@ img {
 
 .searchFormButton:hover {
   opacity: 1;
+  color: goldenrod;
 }
 
 .searchFormButtonLabel {
@@ -204,5 +205,5 @@ img {
 
 .loadButton:hover,
 .loadButton:focus {
-  background-color: #303f9f;
+  background-color: #c5276b;
 }
