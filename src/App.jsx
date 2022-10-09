@@ -90,7 +90,7 @@ export default class App extends Component {
   
 
   render() {
-    const totalPages = Math.round(this.state.total / this.state.page)
+    const totalPages = Math.ceil(this.state.total / 12)
     const lastPage = this.state.page === totalPages
     const isPosts = Boolean((!lastPage) && (this.state.items.length))
 
